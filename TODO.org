@@ -1,0 +1,6 @@
+* What we need to do
+** TODO Generate a model script
+** TODO build a package
+** TODO determine how to ship it to Game group
+** TODO How should the api be designed?
+** TODO How should they run the model?
