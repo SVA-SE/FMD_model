@@ -1,25 +1,25 @@
-## A basic script to generate a FMD model
-
 library(SimInf)
+## Create an 'SIR' model with 1600 nodes and initialize
+## it to run over 4*365 days. Add one infected individual
+## to the first node.
+u0 <- u0_SIR()
+u0$I[1] <- 1
+tspan <- seq(from = 1, to = 4*365, by = 1)
+model <- SIR(u0     = u0,
+             tspan  = tspan,
+             events = events_SIR(),
+             beta   = 0.16,
+             gamma  = 0.077)
 
-data("u0_SISe3", package = "SimInf")
-data("events_SISe3", package = "SimInf")
+## Run the model to generate a single stochastic trajectory.
+result <- run(model)
 
-model <- SISe3(u0 = u0_SISe3, 1:10, upsilon_1 = 1, upsilon_2 = 1,
-      upsilon_3 = 1, gamma_1 = 1, gamma_2 = 1, gamma_3 = 1, alpha = 1,
-      beta_t1 = 1, beta_t2 = 1, beta_t3 = 1, beta_t4 = 1, epsilon = 1, end_t1 = 1, end_t2 = 2, end_t3 = 4, end_t4 = 6, events = events_SISe3)
+## Determine nodes with one or more infected individuals in the
+## trajectory. Extract the 'I' compartment and check for any
+## infected individuals in each node.
+infected <- colSums(trajectory(result, ~ I, format = "matrix")) > 0
 
-table(events_SISe3$event)
-table(events_SISe3$select)
-table(events_SISe3$shift)
-
-## Select matrix that we can use straight away with these events. This
-## seems like a reasonable structure unless we want to simlify it to
-## hj́ust one age category with no ageing events.
-model@events@E
-
-## Shift matrix that we can use. If we drop the age categories we can
-## eliminate the first two columns. The shift from I to S might be
-## useful. Perhaps we just want to start from scratch because we want
-## an SIR model and a shift that is for vaccination.
-model@events@N
+## Display infected nodes in 'blue' and non-infected nodes in 'yellow'.
+data("nodes", package = "SimInf")
+col <- ifelse(infected, "blue", "yellow")
+plot(y ~ x, nodes, col = col, pch = 20, cex = 2)
