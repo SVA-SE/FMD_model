@@ -1,0 +1,29 @@
+* A daily model example
+Here is how you might work with the model from the game. You need an
+available R runtime. You can install that from here:
+https://cran.r-project.org/. You also need to install the SimInf
+package for R.
+
+Once you have done that you should be able to run the model. In the
+current example you have a model specified in the file model.R. It
+takes 3 arguments which are paths to csv files: The first is the state
+before the simulated day, the second are the events you would like to
+process that day, the third is the output path to where you write out
+the result at the end of the simulated day.
+
+In this example, I have broken up complete events for the whole
+simulation period into daily event files so it is easy to run just on
+day's events. Those files are in the daily_events subdirectory. The
+complete events are in the allevents.csv file and you might not need
+those.
+
+You can run the model as I have specified in model.sh where I run the
+example of the first day and return the outcome to u0001.csv. You
+could run this for a second day by passing that result as the starting
+point for the next day and changing the events to those that are
+appropriate for the second day.
+
+Once you have this working, you can try to modified the events and the
+U matrix between model runs which is what the gamer will do.
+
+Good luck and don't hesitate to sand me questions!

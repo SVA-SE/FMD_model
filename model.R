@@ -8,7 +8,7 @@ tspan <- seq(from = 1, to = 4*365, by = 1)
 model <- SIR(u0     = u0,
              tspan  = tspan,
              events = events_SIR(),
-             beta   = 0.16,
+             beta   = 0.001,
              gamma  = 0.077)
 
 ## Run the model to generate a single stochastic trajectory.
@@ -21,5 +21,5 @@ infected <- colSums(trajectory(result, ~ I, format = "matrix")) > 0
 
 ## Display infected nodes in 'blue' and non-infected nodes in 'yellow'.
 data("nodes", package = "SimInf")
-col <- ifelse(infected, "blue", "yellow")
+col <- ifelse(infected, "red", "grey")
 plot(y ~ x, nodes, col = col, pch = 20, cex = 2)

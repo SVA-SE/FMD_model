@@ -1,0 +1,56 @@
+* Three examples of a model for FMD in 1600 farms.
+
+The model runs with some sample data over a several years
+production. The model has 2 levels of hierarchy: 1. 'farm' level and
+'infection status of animals' level. The spread between the farms is
+controlled by animal movements between the farms and the spread
+between animals inside the farms is controlled by 2 parameters in the
+model that are specific to FMD. As you might imagine, different
+diseases have different infectiousness and different progress on
+disease. Therefore the spread within-herd ie. between individual
+animals that have contact with each other is different for different
+diseases. However, the way disease spreads between herds if you
+exclude wierd things like spread through the air or via wildwild that
+may carry disease is simply that you move infected individuals from
+one herd to another and then start a spread process at the recipient
+herd. Within each herd you can think of the units there as animals,
+but the model doesn't actually keep track of individuals, it only
+tracks how many individuals are in each of the infection states (SIR),
+this is known as a compartment model.
+
+With the game in mind, we want a model that can be run somehow in the
+background and interacted with from whatever the game front end
+it. There are probably many ways to acheive this such as a live
+connection to an R process but a simple first approach might be to run
+the model in R for one day and get the result, use it for the game,
+potentially modify things and pass that data back to the model to run
+for another day. There would be several datasets that you would get at
+the end of a model day and can modify and pass for the next day.
+
+1. The state of each farm. This is a table that is one row per farm
+   and one column per disease state. Each cell contains the number of
+   animals in the disease state (compartment). In the SimInf framework
+   we call this the "U" matrix. This is an integer matrix.
+
+2. The movement events of animals between farms, births, deaths and
+   potentially between compartments. This is also a table and the
+   strucuture is documented in the SimInf documentation. The structure
+   is related to two matrices in the model that determines how these
+   events are processed, the shift (N) and select (E) matricies.
+
+3. Other things: We can modify other things like the parameters of the
+   model and if the model was more complex another matrix similar to
+   U. This matrix is called V and is also one row per farm and any
+   number of columns that can be continuous values.
+
+Then a simple 'game loop' would be: Write out these datasets at the
+'end of a model-day' to text files; Manipulate those files in some way
+in the game engine that the player interacts with; pass the text files
+back to Siminf and run another day and so on. I have written such an
+example in this repository and I would propose that we use some
+pre-generated events as the starting point for each day's between herd
+spread and that if the player does nothing, then these are run; if the
+player intervenes then these are modified in some way.
+
+There is another README in the game_model_example directory along with
+a prototype of how you might run the model from the game.
